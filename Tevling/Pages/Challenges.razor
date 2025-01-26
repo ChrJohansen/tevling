@@ -30,8 +30,18 @@
     <div class="d-flex flex-column rg-3 challenge-filters mb-4">
         <h2>Filters</h2>
         <div class="d-flex flex-column row-gap-1">
-            <label><input @bind="ShowAllChallenges" class="form-check-input me-2" type="checkbox" />Show all challenges</label>
-            <label><input @bind="ShowOutdatedChallenges" class="form-check-input me-2" type="checkbox" />Show outdated challenges </label>
+            <label><input @bind="ShowMyChallenges" class="form-check-input me-2" type="checkbox" />Show my challenges</label>
+            <label><input @bind="ShowChallengesByMe" class="form-check-input me-2" type="checkbox" />Show challenges created by me</label>
+            <label><input @bind="ShowOutdatedChallenges" class="form-check-input me-2" type="checkbox" />Show outdated challenges</label>
+            @* <label><input @bind="ShowTimeBasedChallenges" class="form-check-input me-2" type="checkbox" />Show time based challenges </label> *@
+            @* <label><input @bind="ShowDistanceBasedChallenges" class="form-check-input me-2" type="checkbox" />Show distance based challenges </label> *@
+            @* <label><input @bind="ShowElevationBasedChallenges" class="form-check-input me-2" type="checkbox" />Show elevation based challenges </label> *@
+        </div>        
+        <div class="d-flex flex-column row-gap-1">
+            <h5>Challenge type</h5>
+            <label><input @bind="ShowTimeBasedChallenges" class="form-check-input me-2" type="radio" name="Measurement"/>Time</label>
+            <label><input @bind="ShowDistanceBasedChallenges" class="form-check-input me-2" type="radio" name="Measurement" />Distance</label>
+            <label><input @bind="ShowElevationBasedChallenges" class="form-check-input me-2" type="radio" name="Measurement" />Elevation</label>
         </div>
     </div>
 </div>

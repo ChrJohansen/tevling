@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Reactive.Subjects;
 
 namespace Tevling.Pages;
@@ -22,16 +23,31 @@ public partial class Challenges : ComponentBase, IDisposable
     private bool _showAllChallenges = true;
 
     private bool _showOutdatedChallenges;
+    
+    private bool _showTimeBasedChallenges;
+    private bool _showMyChallenges;
+    private bool _showChallengesByMe;
+    private bool _showDistanceBasedChallenges;
+    private bool _showElevationBasedChallenges;
     private int AthleteId { get; set; }
     private bool HasMore { get; set; } = true;
     private Challenge[] ChallengeList { get; set; } = [];
 
-    private bool ShowAllChallenges
+    private bool ShowMyChallenges
     {
-        get => _showAllChallenges;
+        get => _showMyChallenges;
         set
         {
-            _showAllChallenges = value;
+            _showMyChallenges = value;
+            OnFilterChange();
+        }
+    }
+    private bool ShowChallengesByMe
+    {
+        get => _showChallengesByMe;
+        set
+        {
+            _showChallengesByMe = value;
             OnFilterChange();
         }
     }
@@ -42,6 +58,34 @@ public partial class Challenges : ComponentBase, IDisposable
         set
         {
             _showOutdatedChallenges = value;
+            OnFilterChange();
+        }
+    }
+    
+    private bool ShowTimeBasedChallenges
+    {
+        get => _showTimeBasedChallenges;
+        set
+        {
+            _showTimeBasedChallenges = value;
+            OnFilterChange();
+        }
+    }
+    private bool ShowDistanceBasedChallenges
+    {
+        get => _showDistanceBasedChallenges;
+        set
+        {
+            _showDistanceBasedChallenges = value;
+            OnFilterChange();
+        }
+    }
+    private bool ShowElevationBasedChallenges
+    {
+        get => _showElevationBasedChallenges;
+        set
+        {
+            _showElevationBasedChallenges = value;
             OnFilterChange();
         }
     }
@@ -168,10 +212,11 @@ public partial class Challenges : ComponentBase, IDisposable
     private void UpdateChallenges()
     {
         ChallengeList = _challenges
-            .Where(
-                c => _showAllChallenges ||
-                    c.Athletes?.Any(athlete => athlete.Id == AthleteId) == true ||
-                    c.CreatedById == AthleteId)
+            .Where(c => !_showChallengesByMe || c.CreatedById == AthleteId)
+            .Where(c => !_showMyChallenges || c.Athletes?.Any(athlete => athlete.Id == AthleteId) == true)
+            .Where(c => !_showTimeBasedChallenges || c.Measurement == ChallengeMeasurement.Time)
+            .Where(c => !_showDistanceBasedChallenges || c.Measurement == ChallengeMeasurement.Distance)
+            .Where(c => !_showElevationBasedChallenges || c.Measurement == ChallengeMeasurement.Elevation)
             .Where(c => _showOutdatedChallenges || c.End.UtcDateTime.Date >= DateTimeOffset.UtcNow.Date)
             .Where(
                 c => string.IsNullOrWhiteSpace(_filterText) ||
